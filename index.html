@@ -436,22 +436,22 @@ I am so dearly sorry from hiding this from you. You really didn't deserve that a
   });
 
   // Hide rising letter after any real scroll
-  let hasHidden = false;
-  function hideRisingLetter(){
-    if(hasHidden) return;
-    hasHidden = true;
-    if(risingWrap){
-      risingWrap.style.transition = "opacity .25s ease, transform .25s ease";
-      risingWrap.style.opacity = "0";
-      risingWrap.style.transform = "translateX(-50%) translateY(12px)";
-      setTimeout(()=>{ risingWrap.style.display = "none"; }, 280);
-    }
-  }
   window.addEventListener("scroll", () => {
-  if(window.scrollY > window.innerHeight) {
-    hideRisingLetter();
+  const threshold = window.innerHeight;
+
+  if (window.scrollY > threshold) {
+    // Hide letter
+    risingWrap.style.transition = "opacity .4s ease, transform .4s ease";
+    risingWrap.style.opacity = "0";
+    risingWrap.style.transform = "translateX(-50%) translateY(20px)";
+  } else {
+    // Show letter again
+    risingWrap.style.transition = "opacity .4s ease, transform .4s ease";
+    risingWrap.style.opacity = "1";
+    risingWrap.style.transform = "translateX(-50%) translateY(0px)";
   }
-}, {passive:true});
+}, { passive: true });
+
 
   // =========================
   // Hearts
