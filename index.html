@@ -448,8 +448,10 @@ I am so dearly sorry from hiding this from you. You really didn't deserve that a
     }
   }
   window.addEventListener("scroll", () => {
-    if(window.scrollY > 20) hideRisingLetter();
-  }, {passive:true});
+  if(window.scrollY > window.innerHeight) {
+    hideRisingLetter();
+  }
+}, {passive:true});
 
   // =========================
   // Hearts
