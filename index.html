@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>I’m Sorry, Shona</title>
+
+<style>
+  :root{
+    --pink:#ff4da6;
+    --pink2:#ff9bd6;
+    --blue:#56e2ff;
+    --purple:#b36bff;
+    --yellow:#ffd36b;
+    --text: rgba(255,255,255,.95);
+    --muted: rgba(255,255,255,.78);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color: var(--text);
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+
+    background: linear-gradient(135deg, #ff7bd5, #b36bff, #56e2ff, #ffd36b);
+    background-size: 420% 420%;
+    animation: gradientMove 12s ease infinite;
+  }
+  @keyframes gradientMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+  section{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding: 34px 16px;
+  }
+  .card{
+    width:min(920px, 95vw);
+    border-radius: 28px;
+    padding: 28px 20px;
+    text-align:center;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.22);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 26px 80px rgba(0,0,0,.28);
+  }
+  h1{
+    margin:0 0 12px;
+    font-size: clamp(34px, 5.2vw, 60px);
+    text-shadow: 0 12px 36px rgba(0,0,0,.22);
+  }
+  p{
+    margin:0;
+    color: var(--muted);
+    font-size: clamp(16px, 2.2vw, 20px);
+    line-height: 1.6;
+  }
+
+  .btnRow{
+    margin-top: 18px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  button{
+    border:0;
+    cursor:pointer;
+    padding: 12px 18px;
+    border-radius: 16px;
+    font-weight: 1000;
+    background: rgba(255,255,255,.95);
+    color: #ff2f93;
+    box-shadow: 0 14px 34px rgba(0,0,0,.20);
+    transition: transform .12s ease, filter .12s ease;
+  }
+  button:hover{ transform: translateY(-2px); filter: brightness(1.02); }
+  button:active{ transform: translateY(1px); }
+
+  .ghost{
+    background: rgba(255,255,255,.20);
+    color: rgba(255,255,255,.95);
+    border: 1px solid rgba(255,255,255,.28);
+  }
+
+  .small{
+    margin-top: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,.72);
+    min-height: 18px;
+  }
+
+  /* Floating hearts */
+  .heart{
+    position:fixed; left:0; top:0;
+    transform: translate(-50%, -50%);
+    pointer-events:none;
+    user-select:none;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
+    animation: floatUp linear forwards;
+    z-index: 3;
+  }
+  @keyframes floatUp{
+    0%   { transform: translate(var(--x), var(--y)) scale(var(--s)) rotate(var(--r)); opacity: 0; }
+    12%  { opacity: 1; }
+    100% { transform: translate(var(--x2), var(--y2)) scale(calc(var(--s) * 1.15)) rotate(calc(var(--r) + 18deg)); opacity: 0; }
+  }
+
+  /* Confetti */
+  .confetti{
+    position:fixed;
+    left:0; top:0;
+    width:8px; height:14px;
+    border-radius:3px;
+    pointer-events:none;
+    animation: fall linear forwards;
+    z-index: 4;
+  }
+  @keyframes fall{
+    0%{ transform: translate(var(--cx), var(--cy)) rotate(var(--cr)); opacity:1; }
+    100%{ transform: translate(var(--cx2), var(--cy2)) rotate(calc(var(--cr) + 360deg)); opacity:0; }
+  }
+
+  /* Rising envelope */
+  .risingWrap{
+    position:fixed;
+    left:50%;
+    bottom:-420px;
+    transform: translateX(-50%);
+    width:min(660px, 94vw);
+    z-index: 10;
+    animation: rise 1.2s cubic-bezier(.2,.9,.2,1) forwards;
+    filter: drop-shadow(0 26px 70px rgba(0,0,0,.35));
+  }
+  @keyframes rise{ to{ bottom: 18px; } }
+
+  .envelope{
+    position:relative;
+    height: 320px;
+    border-radius: 22px;
+    background: rgba(255,255,255,.22);
+    border: 1px solid rgba(255,255,255,.28);
+    overflow:hidden;
+  }
+  .envBack{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(255,255,255,.26), rgba(255,255,255,.12)); }
+  .envBottom{
+    position:absolute; left:0; right:0; bottom:0; height:62%;
+    background: rgba(255,255,255,.16);
+    clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+    border-top: 1px solid rgba(255,255,255,.25);
+  }
+  .envTop{
+    position:absolute; left:0; right:0; top:0; height:62%;
+    background: rgba(255,255,255,.18);
+    clip-path: polygon(0 0, 100% 0, 50% 62%);
+    border-bottom: 1px solid rgba(255,255,255,.25);
+  }
+  .paperPeek{
+    position:absolute;
+    left:10%; right:10%;
+    bottom: 26px;
+    height: 78%;
+    background: rgba(255,255,255,.96);
+    border-radius: 14px;
+    transform: translateY(40%);
+    transition: transform .35s ease;
+  }
+  .envelope:hover .paperPeek{ transform: translateY(32%); }
+
+  /* Heart seal button */
+  .seal{
+    position:absolute;
+    left:50%;
+    top: 54%;
+    transform: translate(-50%,-50%);
+    width: 156px;
+    height: 156px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.14) 58%, rgba(0,0,0,.10));
+    border: 1px solid rgba(255,255,255,.24);
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    user-select:none;
+    z-index: 11;
+  }
+  .sealInner{
+    width: 126px;
+    height: 126px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255,155,214,.98), rgba(255,77,166,.98));
+    display:grid;
+    place-items:center;
+    box-shadow: 0 18px 40px rgba(255,77,166,.24);
+    border: 2px solid rgba(255,255,255,.45);
+    color:#140612;
+    font-weight: 1000;
+    text-align:center;
+    padding: 10px;
+    line-height:1.15;
+  }
+  .sealInner .big{ font-size: 36px; margin-bottom: 6px; }
+  .sealInner .txt{ font-size: 14px; letter-spacing:.2px; }
+
+  /* Modal letter */
+  .modal{
+    position:fixed; inset:0;
+    display:none;
+    place-items:center;
+    background: rgba(0,0,0,.58);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    padding: 16px;
+  }
+  .modal.show{ display:grid; }
+  .letter{
+    width:min(900px, 96vw);
+    max-height: 86vh;
+    overflow:auto;
+    border-radius: 22px;
+    background: rgba(255,255,255,.97);
+    color:#1a0a18;
+    box-shadow: 0 30px 95px rgba(0,0,0,.55);
+  }
+  .letterHeader{
+    position:sticky; top:0;
+    background: linear-gradient(180deg, rgba(255,220,236,.98), rgba(255,255,255,.98));
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    padding: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .letterHeader b{ color:#3a0c2b; }
+  .closeX{
+    border:0;
+    background: rgba(0,0,0,.06);
+    border: 1px solid rgba(0,0,0,.10);
+    color:#1a0a18;
+    padding:10px 12px;
+    border-radius: 12px;
+    cursor:pointer;
+    font-weight: 900;
+  }
+  .letterBody{
+    padding: 18px 18px 22px;
+    text-align:left;
+    line-height:1.6;
+    font-size: 16px;
+    white-space: pre-wrap;
+  }
+
+  /* Music overlay */
+  .overlay{
+    position:fixed; inset:0;
+    display:grid;
+    place-items:center;
+    background: rgba(0,0,0,.55);
+    backdrop-filter: blur(10px);
+    z-index: 60;
+    padding: 16px;
+  }
+  .overlay .panel{
+    width:min(560px, 92vw);
+    padding:22px 18px;
+    border-radius:22px;
+    background: rgba(255,255,255,.20);
+    border: 1px solid rgba(255,255,255,.26);
+    box-shadow: 0 26px 70px rgba(0,0,0,.30);
+    text-align:center;
+  }
+  .overlay h2{ margin:0 0 8px; font-size: 22px; }
+  .overlay p{ margin:0 0 14px; color: rgba(255,255,255,.86); font-size:14px; line-height:1.45; }
+
+  /* YouTube hidden player */
+  #yt{
+    position:fixed;
+    width:1px;height:1px;
+    left:-9999px;top:-9999px;
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .footerLove{
+    font-weight: 1000;
+    font-size: clamp(18px, 2.6vw, 22px);
+    color: rgba(255,255,255,.95);
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- Music overlay -->
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <h2>Play the song ♡</h2>
+      <p>Browsers won’t autoplay sound — tap once and the music starts.</p>
+      <button id="playMusicBtn">Play “Fall in Love with You” 🎶</button>
+      <div class="small">(You can pause later.)</div>
+    </div>
+  </div>
+
+  <!-- Rising envelope -->
+  <div class="risingWrap" id="risingWrap" aria-label="Letter">
+    <div class="envelope">
+      <div class="envBack"></div>
+      <div class="envTop"></div>
+      <div class="envBottom"></div>
+      <div class="paperPeek" aria-hidden="true"></div>
+
+      <div class="seal" id="openLetter" title="Click here">
+        <div class="sealInner">
+          <div class="big">❤</div>
+          <div class="txt">Click here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Letter modal -->
+  <div class="modal" id="modal">
+    <div class="letter" role="dialog" aria-modal="true" aria-label="Letter">
+      <div class="letterHeader">
+        <b>Dear Shona 💌</b>
+        <button class="closeX" id="closeModal">Close ✕</button>
+      </div>
+      <div class="letterBody" id="letterText"></div>
+      <div style="padding:0 18px 18px;">
+        <button id="scrollFromLetter" style="width:100%;">Scroll</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="top">
+      <div class="card">
+        <h1>I’m sorry, Shona</h1>
+        <p>Open the letter below.</p>
+        <div class="small">(Then scroll for the rest.)</div>
+      </div>
+    </section>
+
+    <section id="line">
+      <div class="card">
+        <h1>♡</h1>
+        <p>Shona, I know you may not like me right now, but this is my apology and I just want to say I love you.</p>
+        <div class="btnRow">
+          <a href="#forgive" style="text-decoration:none;"><button class="ghost">Scroll ↓</button></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="forgive">
+      <div class="card" id="forgiveCard">
+        <h1>Will you forgive me?</h1>
+        <div class="btnRow">
+          <button id="yesBtn">Yes</button>
+          <button class="ghost" id="noBtn">No</button>
+        </div>
+        <div class="small" id="answerMsg"></div>
+      </div>
+    </section>
+
+    <section id="bottom">
+      <div class="card">
+        <div class="footerLove">I love you Shona</div>
+      </div>
+    </section>
+  </main>
+
+  <div id="yt"></div>
+
+<script>
+  // =========================
+  // Formspree endpoint (already added)
+  // =========================
+  const FORM_ENDPOINT = "https://formspree.io/f/xkovzkvr";
+
+  async function sendEmail(choice){
+    try{
+      await fetch(FORM_ENDPOINT,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json", "Accept":"application/json" },
+        body: JSON.stringify({
+          answer: choice,
+          time: new Date().toISOString(),
+          page: location.href
+        })
+      });
+    }catch(e){
+      // ignore — site still works even if email fails
+    }
+  }
+
+  // =========================
+  // Letter content
+  // =========================
+  const letter = `Dear Shona,
+
+I am so dearly sorry from hiding this from you. You really didn't deserve that and it was honestly so disrespectful of me. Additionally, I am so sorry that you didn't have the perfect weekend at UT Austin. I really feel so bad that you cannot imagine. I am literally only crying because of how bad I feel and how much I really miss you. You are truly amazing and you don't deserve any of my bullshit that I put you through. I am going to put so much more effort into everything I promise. I really do mean when I say this. The only reason i want to "go out" is to have a good time with friends. I am so sorry I hid it from you, and you cannot imagine how I feel about it. I know I am wrong. I love you Shona. Please forgive me.`;
+
+  document.getElementById("letterText").textContent = letter;
+
+  // =========================
+  // Modal open/close
+  // =========================
+  const modal = document.getElementById("modal");
+  const risingWrap = document.getElementById("risingWrap");
+
+  document.getElementById("openLetter").addEventListener("click", () => {
+    modal.classList.add("show");
+    // cute little burst
+    for(let i=0;i<18;i++) spawnHeart(window.innerWidth/2, window.innerHeight/2, true);
+  });
+
+  document.getElementById("closeModal").addEventListener("click", () => {
+    modal.classList.remove("show");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if(e.target === modal) modal.classList.remove("show");
+  });
+
+  // Scroll button in the letter: close modal, hide rising letter, scroll down
+  document.getElementById("scrollFromLetter").addEventListener("click", () => {
+    modal.classList.remove("show");
+    hideRisingLetter();
+    document.getElementById("line").scrollIntoView({behavior:"smooth"});
+  });
+
+  // Hide rising letter after any real scroll
+  let hasHidden = false;
+  function hideRisingLetter(){
+    if(hasHidden) return;
+    hasHidden = true;
+    if(risingWrap){
+      risingWrap.style.transition = "opacity .25s ease, transform .25s ease";
+      risingWrap.style.opacity = "0";
+      risingWrap.style.transform = "translateX(-50%) translateY(12px)";
+      setTimeout(()=>{ risingWrap.style.display = "none"; }, 280);
+    }
+  }
+  window.addEventListener("scroll", () => {
+    if(window.scrollY > 20) hideRisingLetter();
+  }, {passive:true});
+
+  // =========================
+  // Hearts
+  // =========================
+  const hearts = ["💖","💘","💗","💝","💞","💕","❤️"];
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
+  function spawnHeart(x, y, burst=false){
+    const el = document.createElement("div");
+    el.className = "heart";
+    el.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+
+    const size = burst ? rand(18, 40) : rand(14, 28);
+    el.style.fontSize = `${size}px`;
+
+    const dx1 = rand(-40, 40);
+    const dy1 = rand(-10, 20);
+    const dx2 = dx1 + rand(-160, 160);
+    const dy2 = dy1 - rand(260, 560);
+
+    const rot = rand(-26, 26);
+    const dur = burst ? rand(1200, 2200) : rand(2200, 4200);
+
+    el.style.setProperty("--x",  `${x + dx1}px`);
+    el.style.setProperty("--y",  `${y + dy1}px`);
+    el.style.setProperty("--x2", `${x + dx2}px`);
+    el.style.setProperty("--y2", `${y + dy2}px`);
+    el.style.setProperty("--s",  `${rand(0.9, 1.25)}`);
+    el.style.setProperty("--r",  `${rot}deg`);
+    el.style.animationDuration = `${dur}ms`;
+
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), dur + 120);
+  }
+
+  // continuous hearts from bottom
+  setInterval(() => {
+    const x = window.innerWidth/2 + rand(-220, 220);
+    const y = window.innerHeight - 10 + rand(-20, 10);
+    spawnHeart(x, y, false);
+  }, 240);
+
+  // click hearts
+  document.addEventListener("click", (e) => {
+    for(let i=0;i<6;i++) spawnHeart(e.clientX, e.clientY, true);
+  }, {passive:true});
+
+  // =========================
+  // Confetti burst
+  // =========================
+  function confettiBurst(x, y, n=90){
+    for(let i=0;i<n;i++){
+      const c = document.createElement("div");
+      c.className = "confetti";
+
+      const dur = rand(900, 1700);
+      const dx = rand(-280, 280);
+      const dy = rand(260, 900);
+
+      c.style.setProperty("--cx",  `${x}px`);
+      c.style.setProperty("--cy",  `${y}px`);
+      c.style.setProperty("--cx2", `${x + dx}px`);
+      c.style.setProperty("--cy2", `${y + dy}px`);
+      c.style.setProperty("--cr", `${rand(-180, 180)}deg`);
+      c.style.animationDuration = `${dur}ms`;
+
+      const hue = Math.floor(rand(0, 360));
+      c.style.background = `hsla(${hue}, 95%, 70%, .95)`;
+
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(), dur + 80);
+    }
+  }
+
+  // =========================
+  // Yes / No logic (no tally)
+  // =========================
+  const answerMsg = document.getElementById("answerMsg");
+
+  document.getElementById("yesBtn").addEventListener("click", async () => {
+    answerMsg.textContent = "Thank you 😭💗";
+    const r = document.getElementById("forgiveCard").getBoundingClientRect();
+    confettiBurst(r.left + r.width/2, r.top + 140, 95);
+    await sendEmail("YES");
+  });
+
+  document.getElementById("noBtn").addEventListener("click", async () => {
+    answerMsg.textContent = "Wrong answer try again 😭💗";
+    await sendEmail("NO");
+  });
+
+  // =========================
+  // Music: Montell Fish - Fall in Love with You
+  // (plays after click)
+  // =========================
+  const overlay = document.getElementById("overlay");
+  const playMusicBtn = document.getElementById("playMusicBtn");
+
+  let player;
+  let ytReady = false;
+
+  // Official "Provided to YouTube by Universal Music Group" upload id:
+  // https://www.youtube.com/watch?v=r16ekVT_KOg
+  const YT_VIDEO_ID = "r16ekVT_KOg";
+
+  function loadYouTubeAPI(){
+    return new Promise((resolve) => {
+      if(ytReady) return resolve();
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      window.onYouTubeIframeAPIReady = () => {
+        ytReady = true;
+        resolve();
+      };
+      document.head.appendChild(tag);
+    });
+  }
+
+  function createPlayer(){
+    return new Promise((resolve) => {
+      player = new YT.Player("yt", {
+        height:"1", width:"1",
+        videoId: YT_VIDEO_ID,
+        playerVars:{
+          autoplay:0, controls:0, disablekb:1, fs:0,
+          modestbranding:1, playsinline:1
+        },
+        events:{ onReady: () => resolve() }
+      });
+    });
+  }
+
+  async function startMusic(){
+    overlay.style.display = "none";
+    await loadYouTubeAPI();
+    await createPlayer();
+    player.playVideo();
+  }
+
+  playMusicBtn.addEventListener("click", startMusic);
+</script>
+</body>
+</html>
